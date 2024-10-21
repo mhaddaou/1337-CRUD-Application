@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  postgresqldb:
+    image: postgres:15-alpine
+    container_name: postgresqldb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql-data:/data/db
+    environment:
+      POSTGRES_PASSWORD: mhaddaou
+
+  # frontend:
+  #   container_name: nextjs-frontend
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - backend
+  #     - mongodb
+  #   ports:
+  #     - "3000:3000" # Expose internal frontend port
+  #   volumes:
+  #     - ./frontend:/app
+  #   environment:
+  #     API_URL: http://nestjs-backend:5001
+  #   command: npm start
+
+volumes:
+  postgresql-data:
+
+networks:
+  default:
+    name: my_network
