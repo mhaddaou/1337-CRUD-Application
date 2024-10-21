@@ -11,8 +11,11 @@ import {
   NavbarMenuItem,
   Button,
 } from "@nextui-org/react";
+import { useAppSelector } from "@/app/lib/redux/hooks";
+import AvatarDropDown from "../sub/AvatarDropDown";
 
 export default function NavBar() {
+  const user = useAppSelector(state => state.user)
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const menuItems = [
@@ -63,9 +66,12 @@ export default function NavBar() {
           <Link href="/auth/login">Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="primary" href="/auth/register" variant="flat">
+          {/* <Button as={Link} color="primary" href="/auth/register" variant="flat">
+          
             Sign Up
-          </Button>
+          
+          </Button> */}
+          <AvatarDropDown user={user}/>
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>

@@ -19,8 +19,8 @@ export default function RootLayout({
       <body
         className={` overflow-x-hidden  `}
       >
-        <NavBar/>
         <Providers >
+        <NavBar/>
           <Toaster position="top-right" richColors />
         {children}
         </Providers>
