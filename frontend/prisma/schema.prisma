@@ -18,7 +18,7 @@ model Users{
   firstname     String 
   lastname     String 
   email     String @unique
-  password     String 
+  password     String  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   contacts  Contacts[] @relation("UserContacts")

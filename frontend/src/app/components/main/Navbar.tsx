@@ -1,5 +1,5 @@
 'use client'
-
+import Link from "next/link";
 import React from "react";
 import {
   Navbar,
@@ -9,7 +9,6 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
   Button,
 } from "@nextui-org/react";
 
@@ -30,7 +29,7 @@ export default function NavBar() {
   ];
 
   return (
-    <Navbar className="fixed"  onMenuOpenChange={setIsMenuOpen}>
+    <Navbar className=""  onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -61,10 +60,10 @@ export default function NavBar() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
+          <Link href="/auth/login">Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
+          <Button as={Link} color="primary" href="/auth/register" variant="flat">
             Sign Up
           </Button>
         </NavbarItem>
@@ -82,7 +81,7 @@ export default function NavBar() {
               }
               className="w-full"
               href="#"
-              size="lg"
+              
             >
               {item}
             </Link>

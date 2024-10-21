@@ -9,7 +9,7 @@ export default function Register() {
   const [isSignup, setIsSignup] = useState(false);
 
   return (
-    <div className=" w-screen h-screen  overflow-x-hidden  bg-background pt-16">
+    <div className=" w-screen min-h-screen     overflow-x-hidden  bg-background py-12">
       <div className="w-full h-full container ">
         <div className="w-full flex items-center justify-center  h-full">
           <div className="w-full  ">
