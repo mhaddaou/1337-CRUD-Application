@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "./components/main/Navbar";
 import { Providers } from "./Providers";
-import {Toaster} from 'sonner'
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,13 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={` overflow-x-hidden  `}
-      >
-        <Providers >
-        <NavBar/>
+      <body className={` overflow-x-hidden  bg-background`}>
+        <Providers>
+          <NavBar />
           <Toaster position="top-right" richColors />
-        {children}
+          {children}
         </Providers>
       </body>
     </html>

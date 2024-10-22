@@ -1,6 +1,6 @@
-'use client'
+"use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -11,12 +11,31 @@ import {
   NavbarMenuItem,
   Button,
 } from "@nextui-org/react";
-import { useAppSelector } from "@/app/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/lib/redux/hooks";
 import AvatarDropDown from "../sub/AvatarDropDown";
+import { fetchUserById } from "@/app/lib/api/userApi";
+import { toast } from "sonner";
+import { updateUser } from "@/app/lib/redux/features/user/userSLice";
 
 export default function NavBar() {
-  const user = useAppSelector(state => state.user)
+  const user = useAppSelector((state) => state.user);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const dispatch = useAppDispatch();
+  const loadUser = async () => {
+    try {
+      const userId = localStorage.getItem("id");
+      if (userId) {
+        const userData = await fetchUserById(userId);
+        dispatch(updateUser(userData));
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      }
+    }
+  };
+
+  loadUser();
 
   const menuItems = [
     "Profile",
@@ -32,7 +51,7 @@ export default function NavBar() {
   ];
 
   return (
-    <Navbar className=""  onMenuOpenChange={setIsMenuOpen}>
+    <Navbar className="" onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -62,16 +81,24 @@ export default function NavBar() {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
+        {
+          !user.logged && <NavbarItem className="hidden lg:flex">
           <Link href="/auth/login">Login</Link>
         </NavbarItem>
+        }
         <NavbarItem>
-          {/* <Button as={Link} color="primary" href="/auth/register" variant="flat">
-          
-            Sign Up
-          
-          </Button> */}
-          <AvatarDropDown user={user}/>
+          {user.logged ? (
+            <AvatarDropDown user={user} />
+          ) : (
+            <Button
+              as={Link}
+              color="primary"
+              href="/auth/register"
+              variant="flat"
+            >
+              Sign Up
+            </Button>
+          )}
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>
@@ -87,7 +114,6 @@ export default function NavBar() {
               }
               className="w-full"
               href="#"
-              
             >
               {item}
             </Link>

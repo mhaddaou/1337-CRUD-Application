@@ -1,11 +1,26 @@
 import { User } from "@/app/lib/interfaces/User.interface";
-import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar} from "@nextui-org/react";
+import { logout } from "@/app/lib/redux/features/user/userSLice";
+import { useAppDispatch } from "@/app/lib/redux/hooks";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Avatar,
+} from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
-interface Props{
-    user : User
+interface Props {
+  user: User;
 }
 
-export default function AvatarDropDown({user} : Props) {
+export default function AvatarDropDown({ user }: Props) {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const handlLogout = () => {
+    dispatch(logout());
+    router.push("/");
+  };
 
   return (
     <div className="flex items-center gap-4 ">
@@ -15,66 +30,27 @@ export default function AvatarDropDown({user} : Props) {
             isBordered
             as="button"
             className="transition-transform"
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            src="https://i.pravatar.cc/150?img=56"
           />
         </DropdownTrigger>
-        <DropdownMenu aria-label="Profile Actions" variant="flat" className="bg-light">
-          <DropdownItem key="profile" className="h-14 gap-2">
+        <DropdownMenu
+          aria-label="Profile Actions"
+          variant="flat"
+          className="bg-light"
+        >
+          <DropdownItem
+            key="profile"
+            className="h-14 gap-2"
+            textValue="signed in as"
+          >
             <p className="font-semibold">Signed in as</p>
             <p className="font-semibold">{user.email}</p>
           </DropdownItem>
-          <DropdownItem key="settings">
-            My Settings
-          </DropdownItem>
-          <DropdownItem key="team_settings">Team Settings</DropdownItem>
-          <DropdownItem key="analytics">
-            Analytics
-          </DropdownItem>
-          <DropdownItem key="system">System</DropdownItem>
-          <DropdownItem key="configurations">Configurations</DropdownItem>
-          <DropdownItem key="help_and_feedback">
-            Help & Feedback
-          </DropdownItem>
-          <DropdownItem key="logout" color="danger">
+          <DropdownItem key="logout" color="danger" onClick={handlLogout}>
             Log Out
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      {/* <Dropdown placement="bottom-start">
-        <DropdownTrigger>
-          <User
-            as="button"
-            avatarProps={{
-              isBordered: true,
-              src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-            }}
-            className="transition-transform"
-            description="@tonyreichert"
-            name="Tony Reichert"
-          />
-        </DropdownTrigger>
-        <DropdownMenu aria-label="User Actions" variant="flat">
-          <DropdownItem key="profile" className="h-14 gap-2">
-            <p className="font-bold">Signed in as</p>
-            <p className="font-bold">@tonyreichert</p>
-          </DropdownItem>
-          <DropdownItem key="settings">
-            My Settings
-          </DropdownItem>
-          <DropdownItem key="team_settings">Team Settings</DropdownItem>
-          <DropdownItem key="analytics">
-            Analytics
-          </DropdownItem>
-          <DropdownItem key="system">System</DropdownItem>
-          <DropdownItem key="configurations">Configurations</DropdownItem>
-          <DropdownItem key="help_and_feedback">
-            Help & Feedback
-          </DropdownItem>
-          <DropdownItem key="logout" color="danger">
-            Log Out
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown> */}
     </div>
   );
 }

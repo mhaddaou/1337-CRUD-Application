@@ -23,8 +23,15 @@ export const UserSlice = createSlice({
       localStorage.setItem("id", action.payload.id);
       localStorage.setItem("logged", String(state.logged));
     },
+    logout(state) {
+      (state.firstname = ""), (state.lastname = ""), (state.email = "");
+      state.id = "";
+      state.logged = false;
+      localStorage.removeItem("id");
+      localStorage.setItem("logged", String(state.logged));
+    },
   },
 });
 
 export default UserSlice.reducer;
-export const { updateUser } = UserSlice.actions;
+export const { updateUser, logout } = UserSlice.actions;
