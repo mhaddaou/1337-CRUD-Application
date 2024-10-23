@@ -1,21 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { LabelInputContainer } from "../components/main/SigninForm";
-import DispalyContact from "../components/main/Table";
-import TableBody from "../components/sub/TableBody";
+import { useEffect } from "react";
 import { Input } from "../components/ui/input";
 import { CreateContact } from "../components/main/CreateContactModal";
-const contacts = {
-  name: "John Doe",
-  phone: "08012345678",
-  email: "mhaddaou@student.1337.ma",
-  jobTitle: "Software Engineer",
-  company: "1337",
-};
+import { Avatar, Button, Tooltip } from "@nextui-org/react";
+import { useAppDispatch, useAppSelector } from "../lib/redux/hooks";
+import { fetchContacts } from "../lib/redux/features/contacts/contactsSlice";
+import { DeleteIcon } from "../components/sub/DeleteIcon";
+import { EyeIcon } from "../components/sub/EyeIcons";
+import { EditIcon } from "../components/sub/EditIcon";
+import { Contact } from "../lib/interfaces/contacts.interface";
+import DisplaySkeleton from "../components/main/DisplaySkeleton";
+import DisplayContactModal from "../components/sub/DisplayContactModal";
+import EditContactModal from "../components/sub/EditContactModal";
 
 export default function Contacts() {
-  const [isChecked, setIsChecked] = useState(false);
+  const dispatch = useAppDispatch();
+  const contacts = useAppSelector((state) => state.contacts);
+  useEffect(() => {
+    if (contacts.loading === "idle") {
+      dispatch(fetchContacts());
+    }
+  }, [dispatch]);
   return (
     <div className="bg-background overflow-x-hidden min-h-screen ">
       <div className="flex overflow-x-hidden flex-col w-full px-2  md:w-[90%] mx-auto md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 py-4">
@@ -46,19 +52,12 @@ export default function Contacts() {
                 name="password"
                 className="pl-10 "
               />
-              {/* <input
-                      type="text"
-                      id="simple-search"
-                      className="bg-gray-50 outline-none border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primaryThree block w-full pl-10 p-2  "
-                      placeholder="Search"
-                      required
-                    /> */}
             </div>
           </form>
         </div>
-        
+
         <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-          <CreateContact/>
+          <CreateContact />
           <div className="flex items-center space-x-3 w-full md:w-auto">
             <button
               id="actionsDropdownButton"
@@ -117,216 +116,117 @@ export default function Contacts() {
               </svg>
             </button>
           </div>
-        
         </div>
       </div>
-      <div className="flex flex-col w-full px-2  md:w-[90%] mx-auto md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 py-4 ">
-      <div className="overflow-y-hidden w-full rounded-lg border">
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead>
-          <tr className="bg-blue-600 text-left text-xs font-semibold uppercase tracking-widest text-white">
-            <th className="px-5 py-3">Full Name</th>
-            <th className="px-5 py-3">Phone</th>
-            <th className="px-5 py-3">User Role</th>
-            <th className="px-5 py-3">Created at</th>
-            <th className="px-5 py-3">Status</th>
-          </tr>
-        </thead>
-        <tbody className="text-gray-500">
-          <tr>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">3</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <div className="flex items-center">
-                <div className="h-10 w-10 flex-shrink-0">
-                  <img className="h-full w-full rounded-full" src="/images/-ytzjgg6lxK1ICPcNfXho.png" alt="" />
-                </div>
-                <div className="ml-3">
-                  <p className="whitespace-no-wrap">Besique Monroe</p>
-                </div>
-              </div>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Administrator</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Sep 28, 2022</p>
-            </td>
+      {contacts.loading === "succeeded" ? (
+        <div className="flex  flex-col w-full px-2  md:w-[90%] mx-auto md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 py-4 ">
+          <div className="overflow-y-hidden bg-white w-full p-4 rounded-xl border-[0.5px] border-black/20">
+            <div className="overflow-x-auto ">
+              <table className="w-full ">
+                <thead className="bg-background ">
+                  <tr className="text-left text-xs text-slate-900/70  font-semibold uppercase tracking-widest ">
+                    <th className="px-6 py-3  rounded-l-lg">Full Name</th>
+                    <th className="px-6 py-3">Phone</th>
+                    <th className="px-6 py-3">JOB TITLE</th>
+                    <th className="px-6 py-3">COMPANY</th>
+                    <th className="px-6 py-3 rounded-r-md">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-500 border-none">
+                  {contacts.data.map((contact) => {
+                    return <ContactBody contact={contact} />;
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <DisplaySkeleton />
+      )}
 
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <span className="rounded-full bg-green-200 px-3 py-1 text-xs font-semibold text-green-900">Active</span>
-            </td>
-          </tr>
-          <tr>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">7</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <div className="flex items-center">
-                <div className="h-10 w-10 flex-shrink-0">
-                  <img className="h-full w-full rounded-full" src="/images/ddHJYlQqOzyOKm4CSCY8o.png" alt="" />
-                </div>
-                <div className="ml-3">
-                  <p className="whitespace-no-wrap">James Cavier</p>
-                </div>
-              </div>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Author</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Sep 28, 2022</p>
-            </td>
-
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <span className="rounded-full bg-green-200 px-3 py-1 text-xs font-semibold text-green-900">Active</span>
-            </td>
-          </tr>
-          <tr>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">12</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <div className="flex items-center">
-                <div className="h-10 w-10 flex-shrink-0">
-                  <img className="h-full w-full rounded-full" src="/images/oPf2b7fqx5xa3mo68dYHo.png" alt="" />
-                </div>
-                <div className="ml-3">
-                  <p className="whitespace-no-wrap">Elvis Son</p>
-                </div>
-              </div>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Editor</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Sep 28, 2022</p>
-            </td>
-
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <span className="rounded-full bg-yellow-200 px-3 py-1 text-xs font-semibold text-yellow-900">Suspended</span>
-            </td>
-          </tr>
-          <tr>
-            <td className="bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">66</p>
-            </td>
-            <td className="bg-white px-5 py-5 text-sm">
-              <div className="flex items-center">
-                <div className="h-10 w-10 flex-shrink-0">
-                  <img className="h-full w-full rounded-full" src="/images/fR71TFZIDTv2jhvKsOMhC.png" alt="" />
-                </div>
-                <div className="ml-3">
-                  <p className="whitespace-no-wrap">Dana White</p>
-                </div>
-              </div>
-            </td>
-            <td className="bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Administrator</p>
-            </td>
-            <td className="bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Sep 28, 2022</p>
-            </td>
-
-            <td className="bg-white px-5 py-5 text-sm">
-              <span className="rounded-full bg-red-200 px-3 py-1 text-xs font-semibold text-red-900">Inactive</span>
-            </td>
-          </tr>
-          <tr>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">12</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <div className="flex items-center">
-                <div className="h-10 w-10 flex-shrink-0">
-                  <img className="h-full w-full rounded-full" src="/images/oPf2b7fqx5xa3mo68dYHo.png" alt="" />
-                </div>
-                <div className="ml-3">
-                  <p className="whitespace-no-wrap">Elvis Son</p>
-                </div>
-              </div>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Editor</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Sep 28, 2022</p>
-            </td>
-
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <span className="rounded-full bg-yellow-200 px-3 py-1 text-xs font-semibold text-yellow-900">Suspended</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div className="flex flex-col items-center border-t bg-white px-5 py-5 sm:flex-row sm:justify-between">
-      <span className="text-xs text-gray-600 sm:text-sm"> Showing 1 to 5 of 12 Entries </span>
-      <div className="mt-2 inline-flex sm:mt-0">
-        <button className="mr-2 h-12 w-12 rounded-full border text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100">Prev</button>
-        <button className="h-12 w-12 rounded-full border text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100">Next</button>
-      </div>
-    </div>
-  </div>
-
-      </div>
-      {/* <div className="mx-auto w-full bg-green-400 max-w-screen-lg px-4 py-8 sm:px-8">
-  
-  <div className="overflow-y-hidden w-full bg-red-500 rounded-lg border">
-    <div className="overflow-x-auto w-full">
-      <table className="w-full">
-        <thead>
-          <tr className="bg-blue-600 text-left text-xs font-semibold uppercase tracking-widest text-white">
-            <th className="px-5 py-3">ID</th>
-            <th className="px-5 py-3">Full Name</th>
-            <th className="px-5 py-3">User Role</th>
-            <th className="px-5 py-3">Created at</th>
-            <th className="px-5 py-3">Status</th>
-          </tr>
-        </thead>
-        <tbody className="text-gray-500">
-         
-          <tr>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">12</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <div className="flex items-center">
-                <div className="h-10 w-10 flex-shrink-0">
-                  <img className="h-full w-full rounded-full" src="/images/oPf2b7fqx5xa3mo68dYHo.png" alt="" />
-                </div>
-                <div className="ml-3">
-                  <p className="whitespace-no-wrap">Elvis Son</p>
-                </div>
-              </div>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Editor</p>
-            </td>
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap">Sep 28, 2022</p>
-            </td>
-
-            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <span className="rounded-full bg-yellow-200 px-3 py-1 text-xs font-semibold text-yellow-900">Suspended</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div className="flex flex-col items-center border-t bg-white px-5 py-5 sm:flex-row sm:justify-between">
-      <span className="text-xs text-gray-600 sm:text-sm"> Showing 1 to 5 of 12 Entries </span>
-      <div className="mt-2 inline-flex sm:mt-0">
-        <button className="mr-2 h-12 w-12 rounded-full border text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100">Prev</button>
-        <button className="h-12 w-12 rounded-full border text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100">Next</button>
-      </div>
-    </div>
-  </div>
-</div> */}
-
-      <DispalyContact />
+      {contacts.loading === "succeeded" && contacts.data.length > 15 && (
+        <div className="flex flex-col w-full px-2  md:w-[90%] mx-auto md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 py-4 ">
+          <div className="w-full flex justify-end  ">
+            <div className="flex w-[30%] justify-end gap-4">
+              <Button
+                className="bg-primaryOne text-white"
+                size="sm"
+                variant="flat"
+              >
+                Previous
+              </Button>
+              <Button
+                className="bg-primaryOne text-white"
+                size="sm"
+                variant="flat"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+interface Props {
+  contact: Contact;
+}
+
+const ContactBody: React.FC<Props> = ({ contact }) => {
+  return (
+    <tr className="border-none text-slate-900/70" key={contact.id}>
+      <td className="border-b border-gray-200 bg-white gap-3 px-5 py-5 flex text-sm">
+        {/* full name and email */}
+        <Avatar />
+        <div className="">
+          <p className="text-bold text-sm capitalize">{contact.name}</p>
+          <p className="text-bold text-sm ">{contact.email}</p>
+        </div>
+      </td>
+      {/* phone */}
+      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm text-bold ">
+        {contact.phone}
+      </td>
+      {/* job title */}
+      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+        <p className="text-bold text-sm capitalize">{contact.jobTitle}</p>
+      </td>
+      {/* company */}
+      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+        {contact.company &&
+          <span className="rounded-full bg-background px-3 py-1 text-xs font-semibold ">
+          {contact.company}
+        </span>
+        }
+      </td>
+      {/* actions */}
+      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+        <div className="relative flex items-center gap-2 ">
+          <Tooltip content="Details" >
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              {/* <EyeIcon /> */}
+              <DisplayContactModal contact={contact}/>
+            </span>
+          </Tooltip>
+          <Tooltip content="Edit user">
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              {/* <EditIcon /> */}
+              <EditContactModal contact={contact}/>
+            </span>
+          </Tooltip>
+          <Tooltip color="danger" content="Delete user">
+            <span
+              className="text-lg text-danger cursor-pointer active:opacity-50"
+              onClick={() => console.log("span clicked")}
+            >
+              <DeleteIcon />
+            </span>
+          </Tooltip>
+        </div>
+      </td>
+    </tr>
+  );
+};

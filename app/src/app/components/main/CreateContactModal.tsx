@@ -8,9 +8,8 @@ import {
   ModalTrigger,
 } from "../ui/animated-modal";
 import { Input } from "../ui/input";
-import { AddContactForm } from "../sub/FormAddContact";
+import AddContactForm, { ForWhat } from "../sub/FormAddContact";
 export function CreateContact() {
-    
   return (
     <div className=" w-full  flex items-center justify-center">
       <Modal>
@@ -32,11 +31,10 @@ export function CreateContact() {
         </ModalTrigger>
         <ModalBody>
           <ModalContent>
-            <AddContactForm />
+            <AddContactForm forWhat={ForWhat.CREATE} />
           </ModalContent>
         </ModalBody>
       </Modal>
     </div>
   );
 }
-

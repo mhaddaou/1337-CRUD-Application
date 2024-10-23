@@ -1,9 +1,9 @@
 const columns = [
-    {name: "NAME", uid: "name"},
-    {name: "PHONE", uid: "phone"},
-    {name: "JOB TITLE", uid: "jobTitle"},
-    {name: "COMPANY", uid: "company"},
-    {name: "ACTIONS", uid: "actions"},
+    {name: "NAME"},
+    {name: "PHONE"},
+    {name: "JOB TITLE"},
+    {name: "COMPANY"},
+    {name: "ACTIONS"},
   ];
   
   const users = [

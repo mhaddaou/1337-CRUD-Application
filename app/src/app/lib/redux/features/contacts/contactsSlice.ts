@@ -1,5 +1,5 @@
 import { getContacts } from "@/app/lib/api/contactsApi";
-import { Contacts } from "@prisma/client";
+import { Contact } from "@/app/lib/interfaces/contacts.interface";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const fetchContacts = createAsyncThunk("contacts/fetchContacts", async () => {
@@ -8,7 +8,7 @@ export const fetchContacts = createAsyncThunk("contacts/fetchContacts", async ()
 });
 
 interface ContactState {
-  data: Contacts[];
+  data: Contact[];
   loading: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
 }
@@ -30,6 +30,8 @@ export const contactsSlice = createSlice({
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.loading = "succeeded";
         state.data = action.payload;
+      state.data.reverse();
+
       })
       .addCase(fetchContacts.rejected, (state, action) => {
         state.loading = "failed";
@@ -38,7 +40,7 @@ export const contactsSlice = createSlice({
   },
   reducers: {
     addContact: (state, action) => {
-      state.data.push(action.payload); // Add new contact
+      state.data.unshift(action.payload); // Add new contact
     },
     updateContact: (state, action) => {
       const { id, ...data } = action.payload;
