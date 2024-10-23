@@ -12,11 +12,11 @@ import {
 
 import { LabelInputContainer } from "../main/SigninForm";
 import { Textarea } from "@nextui-org/react";
-import { createContact } from "@/app/lib/api/contactsApi";
+import { createContact, updateContactApi } from "@/app/lib/api/contactsApi";
 import { toast } from "sonner";
 import { useModal } from "../ui/animated-modal";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
-import { addContact } from "@/app/lib/redux/features/contacts/contactsSlice";
+import { addContact, updateContact } from "@/app/lib/redux/features/contacts/contactsSlice";
 import { Contact } from "@/app/lib/interfaces/contacts.interface";
 
 export enum ForWhat {
@@ -32,8 +32,8 @@ interface Props {
 
 const AddContactForm: React.FC<Props> = ({ contact, forWhat }) => {
   const [loading, setLoading] = useState(false);
-  const [category, setCategory] = useState("Family");
-  const [vip, setVip] = useState(false);
+  const [category, setCategory] = useState(contact?.category || "Family");
+  const [vip, setVip] = useState(contact?.vip || false);
   const { setOpen } = useModal();
   const dispatch = useAppDispatch();
 
@@ -61,29 +61,33 @@ const AddContactForm: React.FC<Props> = ({ contact, forWhat }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // setLoading(true);
-    // const result = await createContact({
-    //       ...formValues,
-    //       category,
-    //       vip,
-    //     });
-    if(forWhat === ForWhat.UPDATE){
-        console.log("for update", formValues, category, vip);
+
+    setLoading(true);
+
+    try {
+      if (forWhat === ForWhat.CREATE) {
+        const result = await createContact({
+          ...formValues,
+          category,
+          vip,
+        });
+        dispatch(addContact(result.data));
+        toast.success(result.message);
+      } else {
+        const result = await updateContactApi({
+          ...formValues,
+          category,
+          vip,
+        }, contact?.id);
+        dispatch(updateContact(result.data));
+        toast.success(result.message);
+      }
+      setOpen(false);
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
-    // try {
-    //   const result = await createContact({
-    //     ...formValues,
-    //     category,
-    //     vip,
-    //   });
-    //   dispatch(addContact(result.data));
-    //   toast.success(result.message);
-    //   setOpen(false);
-    // } catch (error) {
-    //   if (error instanceof Error) toast.error(error.message);
-    // } finally {
-    //   setLoading(false);
-    // }
   };
 
   return (
@@ -218,26 +222,26 @@ const AddContactForm: React.FC<Props> = ({ contact, forWhat }) => {
                 loading ? "hidden" : "flex"
               }`}
             >
-              {
-                forWhat === ForWhat.CREATE ? (
-                  <>
+              {forWhat === ForWhat.CREATE ? (
+                <>
                   <svg
-                className="h-3.5 w-3.5 mr-2"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                />
-              </svg>
-              Add contact
-                  </>
-                ) : <p>Update contact</p>
-              }
+                    className="h-3.5 w-3.5 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                    />
+                  </svg>
+                  Add contact
+                </>
+              ) : (
+                <p>Update contact</p>
+              )}
             </div>
 
             <BottomGradient />

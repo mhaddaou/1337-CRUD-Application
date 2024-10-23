@@ -40,18 +40,19 @@ export const contactsSlice = createSlice({
   },
   reducers: {
     addContact: (state, action) => {
-      state.data.unshift(action.payload); // Add new contact
+      state.data.unshift(action.payload); 
     },
     updateContact: (state, action) => {
       const { id, ...data } = action.payload;
       const contactIndex = state.data.findIndex((contact) => contact.id === id);
       if (contactIndex !== -1) {
-        state.data[contactIndex] = { ...state.data[contactIndex], ...data }; // Update contact
+        state.data[contactIndex] = { ...state.data[contactIndex], ...data }; 
       }
     },
     deleteContact: (state, action) => {
-      const id = action.payload; // Get id from action payload
-      state.data = state.data.filter((contact) => contact.id !== id); // Remove contact
+      const id = action.payload.id; 
+      console.log('action ', action.payload.id)
+      state.data = state.data.filter((contact) => contact.id !== id); 
     },
   },
 });

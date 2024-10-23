@@ -13,6 +13,7 @@ import { Contact } from "../lib/interfaces/contacts.interface";
 import DisplaySkeleton from "../components/main/DisplaySkeleton";
 import DisplayContactModal from "../components/sub/DisplayContactModal";
 import EditContactModal from "../components/sub/EditContactModal";
+import DeleteModal from "../components/sub/DeleteModal";
 
 export default function Contacts() {
   const dispatch = useAppDispatch();
@@ -205,24 +206,22 @@ const ContactBody: React.FC<Props> = ({ contact }) => {
       {/* actions */}
       <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
         <div className="relative flex items-center gap-2 ">
+          
           <Tooltip content="Details" >
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              {/* <EyeIcon /> */}
+            <span className="text-lg text-default-400 cursor-pointer ">
               <DisplayContactModal contact={contact}/>
             </span>
           </Tooltip>
           <Tooltip content="Edit user">
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              {/* <EditIcon /> */}
+            <span className="text-lg text-default-400 cursor-pointer ">
               <EditContactModal contact={contact}/>
             </span>
           </Tooltip>
           <Tooltip color="danger" content="Delete user">
             <span
-              className="text-lg text-danger cursor-pointer active:opacity-50"
-              onClick={() => console.log("span clicked")}
+              className="text-lg text-danger cursor-pointer "
             >
-              <DeleteIcon />
+              <DeleteModal contact={contact}/>
             </span>
           </Tooltip>
         </div>

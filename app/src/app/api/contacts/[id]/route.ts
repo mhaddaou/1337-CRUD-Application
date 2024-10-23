@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../lib/prisma/client";
 import { CreateContact } from "@/app/lib/interfaces/create-contact.interface";
 
+// create contact
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -57,24 +58,90 @@ export async function POST(
   }
 }
 
-
-// GET all contacts
+// GET all contacts for user
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const { id } = params;
-    console.log('im here for fetching users')
 
     const contacts = await prisma.contacts.findMany({
       where: {
         userId: id,
       },
     });
-    console.log(contacts);
 
     return NextResponse.json({ data: contacts });
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred.";
+
+    return NextResponse.json({ message: errorMessage }, { status: 400 });
+  }
+}
+
+// Update contact
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+
+    const { data, idContact } = await request.json();
+
+    // find the contact is already in the database
+    const contact = await prisma.contacts.findUnique({
+      where: {
+        userId: id,
+        id: idContact,
+      },
+    });
+    if (!contact) throw new Error("Contact not found");
+
+    // update the contact
+    const newContact = await prisma.contacts.update({
+      where: {
+        id: contact.id,
+      },
+      data,
+    });
+    return NextResponse.json({
+      message: "Contact updated successfuly",
+      data: newContact,
+    });
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred.";
+
+    return NextResponse.json({ message: errorMessage }, { status: 400 });
+  }
+}
+
+// Delete contact
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+
+    const idContact  = await request.json();
+    console.log(idContact)
+
+    // find the contact is already in the database
+    const contact = await prisma.contacts.delete({
+      where: {
+        userId: id,
+        id: idContact,
+      },
+    });
+
+    return NextResponse.json({
+      message: "Contact deleted successfuly",
+      data: contact,
+    });
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "An unexpected error occurred.";

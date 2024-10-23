@@ -16,6 +16,9 @@ const  EditContactModal : React.FC<Props> = ({contact}) =>{
         </ModalTrigger>
         <ModalBody>
           <ModalContent>
+          <div>
+            <p className="text-slate-900 font-semibold">Edit Contact</p>
+            </div>
           <AddContactForm  contact={contact} forWhat={ForWhat.UPDATE} />
           </ModalContent>
         </ModalBody>
