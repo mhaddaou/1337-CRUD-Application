@@ -12,6 +12,9 @@ export async function GET(
     });
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ message: error.message }, { status: 400 });
+    }
     return NextResponse.json(
       { message: "Error fetching user" },
       { status: 400 }
@@ -34,6 +37,9 @@ export async function PUT(
 
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ message: error.message }, { status: 400 });
+    }
     return NextResponse.json(
       { message: "Error updating user" },
       { status: 500 }

@@ -1,4 +1,3 @@
-import { Skeleton } from "@nextui-org/react";
 import ContactSkeleton from "../sub/Skeleton";
 
 export default function DisplaySkeleton(){

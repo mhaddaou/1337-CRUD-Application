@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const DeleteIcon = (props : any) => (
     <svg
       aria-hidden="true"

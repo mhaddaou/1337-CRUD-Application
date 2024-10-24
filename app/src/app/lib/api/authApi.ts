@@ -4,7 +4,6 @@ import { Register } from "../interfaces/register.interface";
 
 export const registerUser = async (data: Register) => {
   const registerUrl = process.env.NEXT_PUBLIC_REGISTER;
-  console.log(registerUrl)
   
   if (!registerUrl) {
     throw new Error("The REGISTER environment variable is not defined.");
@@ -28,7 +27,6 @@ export const registerUser = async (data: Register) => {
 
 export const loginUser = async (data: Login) => {
   const registerUrl = process.env.NEXT_PUBLIC_LOGIN;
-  console.log(registerUrl)
   
   if (!registerUrl) {
     throw new Error("The Login environment variable is not defined.");

@@ -1,6 +1,5 @@
 export const fetchUserById = async (userId: string) => {
   const registerUrl = process.env.NEXT_PUBLIC_USER;
-  console.log(registerUrl);
 
   if (!registerUrl) {
     throw new Error("The USER environment variable is not defined.");

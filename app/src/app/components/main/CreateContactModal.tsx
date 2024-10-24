@@ -4,12 +4,10 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalTrigger,
 } from "../ui/animated-modal";
-import { Input } from "../ui/input";
 import AddContactForm, { ForWhat } from "../sub/FormAddContact";
-export function CreateContact() {
+export function CreateContact({query} : {query: string}) {
   return (
     <div className=" w-full  flex items-center justify-center">
       <Modal>
@@ -31,7 +29,7 @@ export function CreateContact() {
         </ModalTrigger>
         <ModalBody>
           <ModalContent>
-            <AddContactForm forWhat={ForWhat.CREATE} />
+            <AddContactForm query={query} forWhat={ForWhat.CREATE} />
           </ModalContent>
         </ModalBody>
       </Modal>

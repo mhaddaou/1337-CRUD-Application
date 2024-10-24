@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import {
@@ -16,7 +16,10 @@ import { createContact, updateContactApi } from "@/app/lib/api/contactsApi";
 import { toast } from "sonner";
 import { useModal } from "../ui/animated-modal";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
-import { addContact, updateContact } from "@/app/lib/redux/features/contacts/contactsSlice";
+import {
+  addContact,
+  updateContact,
+} from "@/app/lib/redux/features/contacts/contactsSlice";
 import { Contact } from "@/app/lib/interfaces/contacts.interface";
 
 export enum ForWhat {
@@ -28,9 +31,10 @@ export enum ForWhat {
 interface Props {
   contact?: Contact;
   forWhat: ForWhat;
+  query?: string;
 }
 
-const AddContactForm: React.FC<Props> = ({ contact, forWhat }) => {
+const AddContactForm: React.FC<Props> = ({ query, contact, forWhat }) => {
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState(contact?.category || "Family");
   const [vip, setVip] = useState(contact?.vip || false);
@@ -68,17 +72,23 @@ const AddContactForm: React.FC<Props> = ({ contact, forWhat }) => {
       if (forWhat === ForWhat.CREATE) {
         const result = await createContact({
           ...formValues,
+          name: formValues.name.toLowerCase(),
           category,
           vip,
         });
-        dispatch(addContact(result.data));
+        if (query?.trim() === "") {
+          dispatch(addContact(result.data));
+        }
         toast.success(result.message);
       } else {
-        const result = await updateContactApi({
-          ...formValues,
-          category,
-          vip,
-        }, contact?.id);
+        const result = await updateContactApi(
+          {
+            ...formValues,
+            category,
+            vip,
+          },
+          contact?.id
+        );
         dispatch(updateContact(result.data));
         toast.success(result.message);
       }

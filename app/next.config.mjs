@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['images.unsplash.com'], // Add 'images.unsplash.com' to the allowed domains
+        domains: ['images.unsplash.com'], 
       },
+      reactStrictMode: false,
 };
 
 export default nextConfig;

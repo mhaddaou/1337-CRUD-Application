@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { Button } from "@nextui-org/react";
 import { cn } from "@/app/lib/utils";
 import { toast } from "sonner";
-import { loginUser, registerUser } from "@/app/lib/api/authApi";
+import { loginUser } from "@/app/lib/api/authApi";
 import { useRouter } from "next/navigation";
 import { User } from "@/app/lib/interfaces/User.interface";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
@@ -21,13 +21,7 @@ export function SiginForm() {
     password: "",
   });
 
-  const resetForm = () => {
-    setFormValues({
-      email: "",
-      password: "",
-    });
-  };
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues({

@@ -7,14 +7,12 @@ export async function GET(
   ) {
     try {
       const { id } = params;
-      console.log('im here for fetching users')
   
       const contacts = await prisma.contacts.findMany({
         where: {
           userId: id,
         },
       });
-      console.log(contacts);
   
       return NextResponse.json({ data: contacts });
     } catch (error) {

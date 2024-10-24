@@ -1,4 +1,3 @@
-// app/api/auth/register/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../lib/prisma/client";
 import { ComparePassword } from "../../lib/utils/utils/hashAndCompare";

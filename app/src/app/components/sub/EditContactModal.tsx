@@ -1,6 +1,5 @@
 import { Contact } from "@/app/lib/interfaces/contacts.interface"
 import { Modal, ModalBody, ModalContent, ModalTrigger } from "../ui/animated-modal";
-import { EyeIcon } from "./EyeIcons";
 import { EditIcon } from "./EditIcon";
 import AddContactForm, { ForWhat } from "./FormAddContact";
 

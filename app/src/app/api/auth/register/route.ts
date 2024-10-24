@@ -1,4 +1,3 @@
-// app/api/auth/register/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../lib/prisma/client";
 import { HashPassword } from "../../lib/utils/utils/hashAndCompare";
@@ -35,7 +34,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "User registered successfully", user: newUser},
+      { message: "User registered successfully", user: newUser },
       { status: 201 }
     );
   } catch (error) {

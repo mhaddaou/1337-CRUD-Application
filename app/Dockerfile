@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:18
 
 WORKDIR /frontend
 
@@ -11,6 +11,7 @@ RUN npm i
 COPY ./ ./
 
 RUN npm run build
+RUN npx prisma generate
 
 EXPOSE 3000
 

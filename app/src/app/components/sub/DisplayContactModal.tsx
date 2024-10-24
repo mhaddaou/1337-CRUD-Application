@@ -2,7 +2,6 @@ import { Contact } from "@/app/lib/interfaces/contacts.interface"
 import { Modal, ModalBody, ModalContent, ModalTrigger } from "../ui/animated-modal";
 import { EyeIcon } from "./EyeIcons";
 import  AddContactForm, { ForWhat }  from "./FormAddContact";
-import { ModalHeader } from "@nextui-org/react";
 
 interface Props{
     contact : Contact

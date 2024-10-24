@@ -1,14 +1,11 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
   Button,
 } from "@nextui-org/react";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/hooks";
@@ -19,12 +16,10 @@ import { updateUser } from "@/app/lib/redux/features/user/userSLice";
 
 export default function NavBar() {
   const user = useAppSelector((state) => state.user);
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const dispatch = useAppDispatch();
   const loadUser = async () => {
     try {
       const userId = localStorage.getItem("id");
-      console.log(userId);
       if (userId) {
         const userData = await fetchUserById(userId);
         dispatch(updateUser(userData));
@@ -38,22 +33,7 @@ export default function NavBar() {
 
   loadUser();
 
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
-
-
-
- const AcmeLogo = () => (
+  const AcmeLogo = () => (
     <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
       <path
         clipRule="evenodd"
@@ -65,48 +45,29 @@ export default function NavBar() {
   );
 
   return (
-    <Navbar className="" onMenuOpenChange={setIsMenuOpen}>
+    <Navbar>
       <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden"
-        />
-        <NavbarBrand>
+        <NavbarBrand >
+          <Link href='/' className="flex items-center">
           <AcmeLogo />
           <p className="font-bold text-inherit">CONTAXLY</p>
+          </Link>
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            Customers
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
       <NavbarContent justify="end">
-        {
-          !user.logged && <NavbarItem className="hidden lg:flex">
-          <Link href="/auth/login">Login</Link>
-        </NavbarItem>
-        }
+        {!user.logged && (
+          <NavbarItem className="">
+            <Link href="/auth/login">Login</Link>
+          </NavbarItem>
+        )}
         <NavbarItem>
           {user.logged ? (
             <AvatarDropDown user={user} />
           ) : (
             <Button
               as={Link}
-              color="primary"
+              className="bg-primaryOne text-white"
               href="/auth/register"
               variant="flat"
             >
@@ -115,25 +76,6 @@ export default function NavBar() {
           )}
         </NavbarItem>
       </NavbarContent>
-      <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              className="w-full"
-              href="#"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
     </Navbar>
   );
 }

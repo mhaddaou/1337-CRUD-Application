@@ -4,6 +4,7 @@ services:
   postgresqldb:
     image: postgres:15-alpine
     container_name: postgresqldb
+    restart: always
     ports:
       - "5432:5432"
     volumes:
@@ -11,24 +12,23 @@ services:
     environment:
       POSTGRES_PASSWORD: mhaddaou
 
-  # frontend:
-  #   container_name: nextjs-frontend
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - backend
-  #     - mongodb
-  #   ports:
-  #     - "3000:3000" # Expose internal frontend port
-  #   volumes:
-  #     - ./frontend:/app
-  #   environment:
-  #     API_URL: http://nestjs-backend:5001
-  #   command: npm start
-
+  app:
+    container_name: app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    depends_on:
+      - postgresqldb
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/app
+    command: npm start
+    
 volumes:
   postgresql-data:
+  app:
 
 networks:
   default:

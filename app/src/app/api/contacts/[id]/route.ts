@@ -128,7 +128,6 @@ export async function DELETE(
     const { id } = params;
 
     const idContact  = await request.json();
-    console.log(idContact)
 
     // find the contact is already in the database
     const contact = await prisma.contacts.delete({

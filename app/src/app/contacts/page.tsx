@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../components/ui/input";
 import { CreateContact } from "../components/main/CreateContactModal";
 import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useAppDispatch, useAppSelector } from "../lib/redux/hooks";
-import { fetchContacts } from "../lib/redux/features/contacts/contactsSlice";
-import { DeleteIcon } from "../components/sub/DeleteIcon";
-import { EyeIcon } from "../components/sub/EyeIcons";
-import { EditIcon } from "../components/sub/EditIcon";
+import {
+  fetchContacts,
+  nextPage,
+  previousPage,
+  resetPage,
+} from "../lib/redux/features/contacts/contactsSlice";
 import { Contact } from "../lib/interfaces/contacts.interface";
 import DisplaySkeleton from "../components/main/DisplaySkeleton";
 import DisplayContactModal from "../components/sub/DisplayContactModal";
@@ -18,16 +20,73 @@ import DeleteModal from "../components/sub/DeleteModal";
 export default function Contacts() {
   const dispatch = useAppDispatch();
   const contacts = useAppSelector((state) => state.contacts);
+  const [query, setQuery] = useState("");
+
+  const handlPrevious = () => {
+    dispatch(previousPage());
+    dispatch(
+      fetchContacts({ page: contacts.page - 1, query: query.toLowerCase() })
+    );
+  };
+
+  const handlNext = () => {
+    dispatch(nextPage());
+    dispatch(
+      fetchContacts({ page: contacts.page + 1, query: query.toLowerCase() })
+    );
+  };
+
   useEffect(() => {
     if (contacts.loading === "idle") {
-      dispatch(fetchContacts());
+      dispatch(fetchContacts({ page: contacts.page }));
     }
-  }, [dispatch]);
+  }, [dispatch, contacts.loading, contacts.page]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const { value } = e.target;
+    setQuery(value);
+  };
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(resetPage());
+    dispatch(fetchContacts({ page: 1, query: query.toLowerCase() }));
+  };
+
+  const handlCloseSearch = () => {
+    setQuery("");
+    dispatch(resetPage());
+    dispatch(fetchContacts({ page: 1 }));
+  };
+
   return (
     <div className="bg-background overflow-x-hidden min-h-screen ">
       <div className="flex overflow-x-hidden flex-col w-full px-2  md:w-[90%] mx-auto md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 py-4">
         <div className="w-full md:w-1/2">
-          <form className="flex items-center">
+          <form onSubmit={handleSearch} className="flex items-center  relative">
+            <button
+              onClick={handlCloseSearch}
+              type="button"
+              title="close search"
+              className={`absolute z-[10] right-2 ${
+                query !== "" ? "block" : "hidden"
+              }`}
+            >
+              <svg
+                aria-hidden="true"
+                className="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </button>
             <label htmlFor="simple-search" className="sr-only">
               Search
             </label>
@@ -49,8 +108,10 @@ export default function Contacts() {
               </div>
               <Input
                 id="search"
+                value={query}
+                onChange={handleChange}
                 type="text"
-                name="password"
+                placeholder="search by names"
                 className="pl-10 "
               />
             </div>
@@ -58,65 +119,7 @@ export default function Contacts() {
         </div>
 
         <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-          <CreateContact />
-          <div className="flex items-center space-x-3 w-full md:w-auto">
-            <button
-              id="actionsDropdownButton"
-              data-dropdown-toggle="actionsDropdown"
-              className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              type="button"
-            >
-              <svg
-                className="-ml-1 mr-1.5 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                />
-              </svg>
-              Actions
-            </button>
-
-            <button
-              id="filterDropdownButton"
-              data-dropdown-toggle="filterDropdown"
-              className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              type="button"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-                className="h-4 w-4 mr-2 text-gray-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Filter
-              <svg
-                className="-mr-1 ml-1.5 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                />
-              </svg>
-            </button>
-          </div>
+          <CreateContact query={query} />
         </div>
       </div>
       {contacts.loading === "succeeded" ? (
@@ -135,7 +138,7 @@ export default function Contacts() {
                 </thead>
                 <tbody className="text-gray-500 border-none">
                   {contacts.data.map((contact) => {
-                    return <ContactBody contact={contact} />;
+                    return <ContactBody key={contact.id} contact={contact} />;
                   })}
                 </tbody>
               </table>
@@ -146,18 +149,22 @@ export default function Contacts() {
         <DisplaySkeleton />
       )}
 
-      {contacts.loading === "succeeded" && contacts.data.length > 15 && (
+      {contacts.loading === "succeeded" && contacts.totalPages > 1 && (
         <div className="flex flex-col w-full px-2  md:w-[90%] mx-auto md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 py-4 ">
           <div className="w-full flex justify-end  ">
             <div className="flex w-[30%] justify-end gap-4">
               <Button
+                disabled={contacts.page === 1}
                 className="bg-primaryOne text-white"
                 size="sm"
                 variant="flat"
+                onClick={handlPrevious}
               >
                 Previous
               </Button>
               <Button
+                disabled={contacts.totalPages === contacts.page}
+                onClick={handlNext}
                 className="bg-primaryOne text-white"
                 size="sm"
                 variant="flat"
@@ -197,31 +204,28 @@ const ContactBody: React.FC<Props> = ({ contact }) => {
       </td>
       {/* company */}
       <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-        {contact.company &&
+        {contact.company && (
           <span className="rounded-full bg-background px-3 py-1 text-xs font-semibold ">
-          {contact.company}
-        </span>
-        }
+            {contact.company}
+          </span>
+        )}
       </td>
       {/* actions */}
       <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
         <div className="relative flex items-center gap-2 ">
-          
-          <Tooltip content="Details" >
+          <Tooltip content="Details">
             <span className="text-lg text-default-400 cursor-pointer ">
-              <DisplayContactModal contact={contact}/>
+              <DisplayContactModal contact={contact} />
             </span>
           </Tooltip>
           <Tooltip content="Edit user">
             <span className="text-lg text-default-400 cursor-pointer ">
-              <EditContactModal contact={contact}/>
+              <EditContactModal contact={contact} />
             </span>
           </Tooltip>
           <Tooltip color="danger" content="Delete user">
-            <span
-              className="text-lg text-danger cursor-pointer "
-            >
-              <DeleteModal contact={contact}/>
+            <span className="text-lg text-danger cursor-pointer ">
+              <DeleteModal contact={contact} />
             </span>
           </Tooltip>
         </div>
