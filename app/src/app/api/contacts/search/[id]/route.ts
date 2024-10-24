@@ -7,7 +7,7 @@ export async function POST(
 ) {
   try {
     const { id } = params;
-    const { page, query } = await request.json(); // Expecting 'page' and 'name' from the request body
+    const { page, query } = await request.json();
     const limit = 10;
     const offset = (page - 1) * limit;
 
@@ -16,12 +16,10 @@ export async function POST(
       where: {
         userId: id,
         name: {
-          contains: query, // Search by partial match in the 'name' field
-          mode: 'insensitive', // Case-insensitive search
+          contains: query,
+          mode: "insensitive",
         },
       },
-      
-      
     });
 
     const totalPage = Math.ceil(count / limit);
@@ -31,16 +29,14 @@ export async function POST(
       where: {
         userId: id,
         name: {
-          contains: query, // Search by partial match in the 'name' field
-          mode: 'insensitive', // Case-insensitive search
+          contains: query,
+          mode: "insensitive",
         },
-        
       },
       skip: offset,
       take: limit,
       orderBy: { createdAt: "desc" },
     });
-
 
     return NextResponse.json(
       { message: "Get contacts successfully", data: contacts, totalPage },

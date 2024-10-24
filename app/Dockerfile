@@ -10,9 +10,6 @@ RUN npm i
 
 COPY ./ ./
 
-RUN npm run build
-RUN npx prisma generate
+RUN chmod +x script.sh
 
-EXPOSE 3000
-
-CMD ["npm", "start"]
+CMD ["sh", "./script.sh"]

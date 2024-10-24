@@ -1,9 +1,5 @@
-#!/bin/sh
-
-# Ensure prisma is installed globally
-npm install -g prisma
-
+npm run prisma:generate
+npm run prisma:migrate:deploy
 npx prisma db push
-npx prisma generate
 npm run build
-cd /app && npm run start
+npm run start
