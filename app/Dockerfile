@@ -1,6 +1,6 @@
 FROM node:18
 
-WORKDIR /frontend
+WORKDIR /application
 
 RUN apt-get update -y
 
